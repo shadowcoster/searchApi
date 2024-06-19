@@ -103,10 +103,7 @@ export function* getSelectedProductSaga(action) {
         ShowAlertMessage(ValidationConstants.internetCheck, popupType.error);
       }
     } catch (e) {
-      // yield put({
-      //   type: ApiConstants.API_GET_PRODUCTS_LOAD,
-      //   data: false,
-      // });
+     
       ShowAlertMessage(ValidationConstants.internetCheck, popupType.error);
     }
   } else {

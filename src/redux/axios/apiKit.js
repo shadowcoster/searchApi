@@ -9,12 +9,12 @@ const APIKit = axios.create({
 });
 
 const requestInterceptor = async config => {
-  console.log('Request Interceptor Config:', config); // Console log the request interceptor config
+  console.log('Request Interceptor Config:', config);
   return config;
 };
 
 const responseInterceptor = response => {
-  console.log('Response Interceptor Response:', response); // Console log the response interceptor response
+  console.log('Response Interceptor Response:', response); 
   return response;
 };
 

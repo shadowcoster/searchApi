@@ -20,7 +20,7 @@ import {
   getSelectedProductAction,
 } from '../../redux/actions/products';
 import {Picker} from '@react-native-picker/picker';
-import {ApiConstants, constants} from '../../constants/apiConstants';
+import { constants} from '../../constants/apiConstants';
 
 const groupByCategory = products => {
   const grouped = products.reduce((acc, product) => {
