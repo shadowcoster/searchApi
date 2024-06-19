@@ -7,14 +7,11 @@ import {
   SectionList,
   Image,
   ActivityIndicator,
+  FlatList,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {ColorConst} from '../../constants/colorsConst';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
-
+import {styles} from './styles';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   categorySearchAction,
@@ -23,6 +20,7 @@ import {
   getSelectedProductAction,
 } from '../../redux/actions/products';
 import {Picker} from '@react-native-picker/picker';
+import {ApiConstants, constants} from '../../constants/apiConstants';
 
 const groupByCategory = products => {
   const grouped = products.reduce((acc, product) => {
@@ -69,6 +67,15 @@ const renderItem = ({item}) => (
     </View>
   </View>
 );
+const renderItemSelected = ({item}) => (
+  <View style={styles.itemContainer}>
+    <Image source={{uri: item.thumbnail}} style={styles.itemImage} />
+    <View style={styles.itemTextContainer}>
+      <Text style={styles.itemTitle}>{item.title}</Text>
+      <Text style={styles.itemDescription}>{item.description}</Text>
+    </View>
+  </View>
+);
 
 const renderSectionHeader = ({section: {title}}) => (
   <Text style={styles.sectionHeader}>{title}</Text>
@@ -88,7 +95,7 @@ const ProductsScreen = () => {
     searchedList,
     selectedProductList,
   } = useSelector(state => state?.productsReducer);
-  console.log('selectedPROD', selectedProductList);
+
   const categories = [
     {label: 'all', value: 'all'},
     ...(categoryList?.map(item => ({label: item?.name, value: item?.slug})) ||
@@ -122,13 +129,13 @@ const ProductsScreen = () => {
     <SafeAreaView style={styles.container}>
       <View>
         <View style={styles.headerContainer}>
-          <View style={{alignItems: 'center'}}>
-            <Text style={styles.headerText}>Products</Text>
+          <View style={{alignItems: 'flex-end', flex: 1}}>
+            <Text style={styles.headerText}>{constants.Products}</Text>
           </View>
           <View style={styles.dropdownContainer}>
             <Picker
               selectedValue={selectedCategory}
-              style={{height: 50, width: 250}}
+              style={{height: 50, width: 150}}
               onValueChange={itemValue => {
                 dispatch(getSelectedProductAction(itemValue));
                 setSelectedCategory(itemValue);
@@ -156,7 +163,17 @@ const ProductsScreen = () => {
             }}
           />
         </View>
-        {search?.length > 0 ? (
+
+        {selectedCategory != 'all' ? (
+          <View>
+            <Text style={styles.sectionHeader}>{selectedCategory}</Text>
+            <FlatList
+              data={selectedProductList?.products}
+              renderItem={renderItemSelected}
+              keyExtractor={item => item.id.toString()}
+            />
+          </View>
+        ) : search?.length > 0 ? (
           searchedSection.length !== 0 ? (
             <SectionList
               sections={searchedSection}
@@ -167,7 +184,7 @@ const ProductsScreen = () => {
             />
           ) : (
             <View style={styles.noDataContainer}>
-              <Text style={styles.noDataText}>No Data Found</Text>
+              <Text style={styles.noDataText}>{constants.NoData}</Text>
             </View>
           )
         ) : (
@@ -188,97 +205,3 @@ const ProductsScreen = () => {
 };
 
 export default ProductsScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: ColorConst.white,
-    flex: 1,
-  },
-  headerContainer: {
-    height: hp(8),
-    backgroundColor: ColorConst.offWhite,
-    zIndex: 999,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  headerText: {
-    textAlign: 'center',
-    fontSize: hp(2.5),
-    fontWeight: 'bold',
-    color: 'black',
-  },
-  dropdownContainer: {
-    position: 'absolute',
-    top: 5,
-    right: 0,
-  },
-  dropdown: {
-    width: wp(30),
-    height: hp(7.5),
-    marginRight: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 10,
-    elevation: 5,
-  },
-  searchContainer: {
-    backgroundColor: ColorConst.white,
-    marginTop: hp(3),
-    marginHorizontal: wp(5),
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 10,
-    elevation: 5,
-  },
-  searchInput: {
-    paddingHorizontal: wp(3),
-  },
-  sectionHeader: {
-    color: 'black',
-    fontSize: wp(5),
-    padding: hp(1),
-    backgroundColor: 'gray',
-  },
-  itemContainer: {
-    flexDirection: 'row',
-    margin: wp(0.2),
-  },
-  itemImage: {
-    height: 100,
-    width: 100,
-  },
-  itemTextContainer: {
-    flex: 1,
-  },
-  itemTitle: {
-    fontSize: hp(2),
-  },
-  itemDescription: {
-    fontSize: hp(1.5),
-  },
-  sectionListContent: {
-    paddingBottom: hp(25),
-  },
-  noDataContainer: {
-    height: 100,
-    marginTop: hp(3),
-    backgroundColor: ColorConst.white,
-  },
-  noDataText: {
-    color: 'black',
-    textAlign: 'center',
-  },
-  footer: {
-    padding: 10,
-  },
-});

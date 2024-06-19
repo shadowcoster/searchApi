@@ -7,4 +7,9 @@ export const ApiConstants = {
   API_GET_SELECTED_PRODUCT_LOAD: 'API_GET_SELECTED_PRODUCT_LOAD',
   API_GET_CATEGORY_SEARCH_LOAD: 'API_GET_CATEGORY_SEARCH_LOAD',
   API_GET_CATEGORY_SEARCH_SUCCESS: 'API_GET_CATEGORY_SEARCH_SUCCESS',
+
 };
+export const constants={
+  Products:"Products",
+  NoData:"No Data Found."
+}
